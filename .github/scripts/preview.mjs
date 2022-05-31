@@ -62,11 +62,11 @@ fs.writeFile(paths.join(__preview_js, "app.js"), `${await fs.readFile(paths.join
 fs.writeFile(paths.join(__preview_js, "app.placeholder.js"), `${await fs.readFile(paths.join(__web, "app.placeholder.js"))}`)
 fs.copyFile(paths.join(__node_modules, "ejs/ejs.min.js"), paths.join(__preview_js, "ejs.min.js"))
 fs.writeFile(paths.join(__preview_js, "faker.min.js"), "import {faker} from '/.js/faker/index.mjs';globalThis.faker=faker;globalThis.placeholder.init(globalThis)")
-for (const directory of ["esm", "esm/locale"]) {
-  await fs.mkdir(paths.join(__preview_js, "faker", directory.replace("esm/", "")), {recursive:true})
-  for (const file of await fs.readdir(paths.join(__node_modules, "@faker-js/faker/dist", directory))) {
+for (const path of [[], ["locale"]]) {
+  await fs.mkdir(paths.join(__preview_js, "faker", ...path), {recursive:true})
+  for (const file of await fs.readdir(paths.join(__node_modules, "@faker-js/faker/dist/esm", ...path))) {
     if (file.endsWith(".mjs"))
-      fs.copyFile(paths.join(__node_modules, "@faker-js/faker/dist", directory, file), paths.join(__preview_js, "faker", directory.replace("esm/", ""), file))
+      fs.copyFile(paths.join(__node_modules, "@faker-js/faker/dist/esm", ...path, file), paths.join(__preview_js, "faker", ...path, file))
   }
 }
 fs.copyFile(paths.join(__node_modules, "axios/dist/axios.min.js"), paths.join(__preview_js, "axios.min.js"))
